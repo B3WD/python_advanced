@@ -1,16 +1,29 @@
 def solve(matrix):
     knights_removed = 0
+    current_best_knight = (0, (0, 0))
     size = len(matrix)
-    for i in range(size):
-        for j in range(size):
-            if matrix[i][j] == "K":
-                knights_removed += attack_spots((i, j), matrix)
-    print(knights_removed)
+    while True:
+        for i in range(size):
+            for j in range(size):
+                if matrix[i][j] == "K":
+                    current_knight = find_best_attacker((i, j), matrix)
+                    if current_knight[0] > current_best_knight[0]:
+                        current_best_knight = current_knight
+        if current_best_knight[0] == 0:
+            print(knights_removed)
+            break
+        best_knight_x, best_knight_y = current_best_knight[1]
+        matrix[best_knight_x][best_knight_y] = "0"
+        current_best_knight = (0, (0, 0))
+        knights_removed += 1
 
 
-def attack_spots(loc, matrix):
+def find_best_attacker(loc, matrix):
+    """
+    Find the knight that can hit the most figs. Return how many it can hit and pos.
+    """
     size = len(matrix)
-    knights_removed = 0
+    knights_to_remove = 0
     x, y = loc
     attack_spots = []
 
@@ -26,10 +39,9 @@ def attack_spots(loc, matrix):
         coef_1, coef_2 = attack_spot
         if 0 <= x + coef_1 < size and 0 <= y + coef_2 < size:
             if matrix[x + coef_1][y + coef_2] == "K":
-                matrix[x + coef_1][y + coef_2] = "0"
-                knights_removed += 1
+                knights_to_remove += 1
     
-    return knights_removed
+    return (knights_to_remove, loc)
 
 
 matrix = []
