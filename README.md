@@ -1,1 +1,1 @@
-# python_advanced_softuni
+# python_ex
